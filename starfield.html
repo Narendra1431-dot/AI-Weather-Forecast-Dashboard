@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calming Starfield</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      overflow: hidden;
+      background: #0a0a12;
+      cursor: none;
+    }
+    
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+    
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    
+    .twinkle {
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    .hint {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.3);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      pointer-events: none;
+      animation: fadeIn 2s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <div class="hint">move your cursor to explore</div>
+  
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let stars = [];
+    const numStars = 300;
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    
+    // Color palette for calming stars
+    const starColors = [
+      'rgba(255, 255, 255, 0.9)',    // Pure white
+      'rgba(200, 220, 255, 0.8)',    // Cool blue-white
+      'rgba(255, 245, 230, 0.85)',   // Warm white
+      'rgba(180, 200, 255, 0.7)',    // Soft blue
+      'rgba(255, 230, 200, 0.75)',   // Soft peach
+    ];
+    
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          z: Math.random() * 2 + 0.5,  // Depth factor
+          size: Math.random() * 2 + 0.5,
+          color: starColors[Math.floor(Math.random() * starColors.length)],
+          twinkleSpeed: Math.random() * 0.02 + 0.01,
+          twinklePhase: Math.random() * Math.PI * 2,
+          baseOpacity: Math.random() * 0.5 + 0.3
+        });
+      }
+    }
+    
+    function drawStar(star, offsetX, offsetY) {
+      const parallaxX = (star.z - 0.5) * offsetX * 0.15;
+      const parallaxY = (star.z - 0.5) * offsetY * 0.15;
+      
+      const x = star.x + parallaxX;
+      const y = star.y + parallaxY;
+      
+      // Twinkle effect
+      const twinkle = Math.sin(Date.now() * star.twinkleSpeed + star.twinklePhase);
+      const opacity = star.baseOpacity + twinkle * 0.3;
+      
+      // Glow effect
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, star.size * 3);
+      gradient.addColorStop(0, star.color.replace('0.9', String(opacity)));
+      gradient.addColorStop(0.3, star.color.replace(/0\.\d+/, String(opacity * 0.5)));
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.beginPath();
+      ctx.fillStyle = gradient;
+      ctx.arc(x, y, star.size * 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Core star
+      ctx.beginPath();
+      ctx.fillStyle = star.color.replace(/0\.\d+/, String(opacity));
+      ctx.arc(x, y, star.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    function animate() {
+      // Smooth mouse following
+      targetX += (mouseX - targetX) * 0.05;
+      targetY += (mouseY - targetY) * 0.05;
+      
+      const offsetX = targetX - width / 2;
+      const offsetY = targetY - height / 2;
+      
+      // Clear with slight fade for trail effect
+      ctx.fillStyle = 'rgba(10, 10, 18, 0.15)';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Draw all stars
+      stars.forEach(star => drawStar(star, offsetX, offsetY));
+      
+      requestAnimationFrame(animate);
+    }
+    
+    // Initialize
+    resize();
+    createStars();
+    
+    // Event listeners
+    window.addEventListener('resize', () => {
+      resize();
+      createStars();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Touch support for mobile
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+      }
+    });
+    
+    // Hide hint after first movement
+    const hint = document.querySelector('.hint');
+    let hintHidden = false;
+    
+    document.addEventListener('mousemove', () => {
+      if (!hintHidden) {
+        hint.style.opacity = '0';
+        hint.style.transition = 'opacity 1s ease';
+        hintHidden = true;
+      }
+    });
+    
+    // Start animation
+    animate();
+  </script>
+</body>
+</html>

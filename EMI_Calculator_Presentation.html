@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator - Project Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Base slide styling */
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideIn 0.6s var(--ease-out-expo) forwards;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Progress bar animation */
+        .progress-bar {
+            transition: width 0.5s var(--ease-out-expo);
+        }
+        
+        /* Code block styling */
+        .code-block {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        /* Gradient text */
+        .highlight {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Card base styling with hover effects */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            transition: all 0.4s var(--ease-out-expo);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .slide.active .card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered card animations */
+        .slide.active .card:nth-child(1) { transition-delay: 0.1s; }
+        .slide.active .card:nth-child(2) { transition-delay: 0.15s; }
+        .slide.active .card:nth-child(3) { transition-delay: 0.2s; }
+        .slide.active .card:nth-child(4) { transition-delay: 0.25s; }
+        .slide.active .card:nth-child(5) { transition-delay: 0.3s; }
+        .slide.active .card:nth-child(6) { transition-delay: 0.35s; }
+        
+        /* Enhanced hover effects */
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Focus effects for interactive elements */
+        .nav-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .nav-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Table row animations */
+        .table-row {
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            transform: translateX(4px);
+        }
+        
+        /* Floating animation for icons */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Pulse animation */
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+            }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        /* Entrance animation for hero section */
+        @keyframes heroEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .hero-animate {
+            animation: heroEntrance 1s var(--ease-out-expo) forwards;
+        }
+        
+        /* Title reveal animation */
+        @keyframes titleReveal {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .title-animate {
+            animation: titleReveal 0.8s var(--ease-out-expo) 0.3s forwards;
+            opacity: 0;
+        }
+        
+        /* Card reveal on slide */
+        @keyframes cardReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Loading spinner animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Staggered animation delays */
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+        .stagger-6 { transition-delay: 0.6s; }
+        
+        /* Gradient border animation */
+        @keyframes gradientBorder {
+            0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
+            50% { border-color: rgba(139, 92, 246, 0.5); }
+        }
+        
+        .gradient-border {
+            animation: gradientBorder 3s ease-in-out infinite;
+        }
+        
+        /* Shimmer effect for cards */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        /* Accessibility - Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .slide {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            
+            .card {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        
+        /* Touch/click feedback */
+        @media (hover: none) {
+            .card:hover {
+                transform: none;
+                background: rgba(255, 255, 255, 0.05);
+            }
+            
+            .card:active {
+                transform: scale(0.98);
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Progress indicator animation */
+        @keyframes progressFill {
+            from { width: 0; }
+        }
+        
+        .progress-fill-animate {
+            animation: progressFill 0.5s var(--ease-out-expo) forwards;
+        }
+        
+        /* Text highlight animation */
+        @keyframes textHighlight {
+            0%, 100% { 
+                background-size: 0% 100%;
+            }
+            50% { 
+                background-size: 100% 100%;
+            }
+        }
+        
+        .text-highlight {
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            background-size: 0% 100%;
+            background-repeat: no-repeat;
+            animation: textHighlight 2s ease-in-out infinite;
+        }
+        
+        /* Number counter animation */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .count-animate {
+            animation: countUp 0.5s var(--ease-out-expo) forwards;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-800 z-50">
+        <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" style="width: 4%"></div>
+    </div>
+
+    <!-- Slide Container -->
+    <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col">
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active" data-slide="1">
+            <div class="flex flex-col items-center justify-center min-h-[80vh] text-center">
+                <div class="mb-8 hero-animate">
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl pulse-glow float-animation">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="text-6xl font-bold mb-4 highlight title-animate">EMI Calculator</h1>
+                <p class="text-2xl text-slate-300 mb-8 title-animate" style="animation-delay: 0.4s;">Comprehensive Financial Planning Tool</p>
+                <div class="flex flex-wrap gap-4 justify-center text-slate-400 title-animate" style="animation-delay: 0.6s;">
+                    <span class="px-4 py-2 bg-slate-800/50 rounded-full transition-all hover:bg-slate-700/50 hover:scale-105">💵 Principal Input</span>
+                    <span class="px-4 py-2 bg-slate-800/50 rounded-full transition-all hover:bg-slate-700/50 hover:scale-105">📊 Interest Rates</span>
+                    <span class="px-4 py-2 bg-slate-800/50 rounded-full transition-all hover:bg-slate-700/50 hover:scale-105">📅 Flexible Tenure</span>
+                    <span class="px-4 py-2 bg-slate-800/50 rounded-full transition-all hover:bg-slate-700/50 hover:scale-105">🧮 EMI Engine</span>
+                    <span class="px-4 py-2 bg-slate-800/50 rounded-full transition-all hover:bg-slate-700/50 hover:scale-105">📋 Amortization</span>
+                </div>
+                <p class="mt-12 text-slate-500 title-animate" style="animation-delay: 0.8s;">Press → or Click Next to continue</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Project Background -->
+        <div class="slide" data-slide="2">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Project Background & Business Objectives</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8 mt-12">
+                    <div class="card p-6 stagger-1">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-400">Project Background</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-blue-500 mr-2">▸</span>
+                                Financial technology application for loan calculations
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-blue-500 mr-2">▸</span>
+                                Built with modern web technologies
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-blue-500 mr-2">▸</span>
+                                MongoDB for persistent data storage
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-blue-500 mr-2">▸</span>
+                                RESTful API architecture
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-blue-500 mr-2">▸</span>
+                                JWT-based authentication
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card p-6 stagger-2">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Business Objectives</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-purple-500 mr-2">▸</span>
+                                Financial Empowerment through transparency
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-purple-500 mr-2">▸</span>
+                                Accurate EMI calculations
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-purple-500 mr-2">▸</span>
+                                Loan eligibility assessment
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-purple-500 mr-2">▸</span>
+                                Multi-scenario comparison
+                            </li>
+                            <li class="flex items-start transform transition-all hover:translate-x-2">
+                                <span class="text-purple-500 mr-2">▸</span>
+                                Prepayment & foreclosure analysis
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card p-6 mt-8 stagger-3">
+                    <h3 class="text-xl font-semibold mb-4 text-green-400">Supported Loan Types</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <span class="text-2xl block mb-2">🏠</span>
+                            <p class="mt-2">Home Loan</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <span class="text-2xl block mb-2">💰</span>
+                            <p class="mt-2">Personal Loan</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <span class="text-2xl block mb-2">🚗</span>
+                            <p class="mt-2">Car Loan</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <span class="text-2xl block mb-2">🎓</span>
+                            <p class="mt-2">Education Loan</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <span class="text-2xl block mb-2">📋</span>
+                            <p class="mt-2">Other Loans</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Features Overview -->
+        <div class="slide" data-slide="3">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Implemented Features</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-1">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">💵</div>
+                        <h3 class="font-semibold text-lg mb-2">Principal Input</h3>
+                        <p class="text-slate-400 text-sm">Loan amount from ₹1,000 to ₹100 crore</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-2">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">📊</div>
+                        <h3 class="font-semibold text-lg mb-2">Interest Rate Types</h3>
+                        <p class="text-slate-400 text-sm">Fixed, Variable, Floating, Mixed</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-3">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">📅</div>
+                        <h3 class="font-semibold text-lg mb-2">Flexible Tenure</h3>
+                        <p class="text-slate-400 text-sm">Months/Years with auto-conversion</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-4">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">🧮</div>
+                        <h3 class="font-semibold text-lg mb-2">EMI Calculation</h3>
+                        <p class="text-slate-400 text-sm">Standard reducing balance method</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-5">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">📋</div>
+                        <h3 class="font-semibold text-lg mb-2">Amortization Schedule</h3>
+                        <p class="text-slate-400 text-sm">Month-by-month breakdown</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all stagger-6">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">📈</div>
+                        <h3 class="font-semibold text-lg mb-2">Payment Visualization</h3>
+                        <p class="text-slate-400 text-sm">Pie & Bar charts</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">⚡</div>
+                        <h3 class="font-semibold text-lg mb-2">Prepayment Calculator</h3>
+                        <p class="text-slate-400 text-sm">One-time & recurring prepayments</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">🔒</div>
+                        <h3 class="font-semibold text-lg mb-2">Foreclosure Analysis</h3>
+                        <p class="text-slate-400 text-sm">Complete payoff calculation</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">⚖️</div>
+                        <h3 class="font-semibold text-lg mb-2">Multi-Scenario Comparison</h3>
+                        <p class="text-slate-400 text-sm">Compare up to 3 scenarios</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">💎</div>
+                        <h3 class="font-semibold text-lg mb-2">Eligibility Check</h3>
+                        <p class="text-slate-400 text-sm">Income-based assessment</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">🔐</div>
+                        <h3 class="font-semibold text-lg mb-2">User Authentication</h3>
+                        <p class="text-slate-400 text-sm">JWT + Role-based access</p>
+                    </div>
+                    
+                    <div class="card p-5 hover:bg-white/5 transition-all">
+                        <div class="text-3xl mb-3 transform transition-all hover:scale-110">📱</div>
+                        <h3 class="font-semibold text-lg mb-2">Responsive Design</h3>
+                        <p class="text-slate-400 text-sm">Mobile, Tablet, Desktop</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: User Flows -->
+        <div class="slide" data-slide="4">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Feature User Flows</h2>
+                
+                <div class="card p-6 mt-8 stagger-1">
+                    <h3 class="text-xl font-semibold mb-6 text-blue-400">EMI Calculation Flow</h3>
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-blue-500 font-bold">1</span>
+                            <p class="text-sm mt-1">Enter Principal</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-slate-600 hidden md:block"></div>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-blue-500 font-bold">2</span>
+                            <p class="text-sm mt-1">Set Rate Type</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-slate-600 hidden md:block"></div>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-blue-500 font-bold">3</span>
+                            <p class="text-sm mt-1">Enter Interest</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-slate-600 hidden md:block"></div>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-blue-500 font-bold">4</span>
+                            <p class="text-sm mt-1">Select Tenure</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-slate-600 hidden md:block"></div>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-blue-500 font-bold">5</span>
+                            <p class="text-sm mt-1">Calculate</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-slate-600 hidden md:block"></div>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg transform transition-all hover:scale-110 hover:shadow-lg">
+                            <span class="text-green-500 font-bold">6</span>
+                            <p class="text-sm mt-1">View Results</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="card p-6 stagger-2">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Prepayment Flow</h3>
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-purple-500 font-bold mr-3">1.</span> Enter base loan details</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-purple-500 font-bold mr-3">2.</span> Select prepayment type</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-purple-500 font-bold mr-3">3.</span> Enter prepayment amount</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-purple-500 font-bold mr-3">4.</span> Choose recalculation option</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-purple-500 font-bold mr-3">5.</span> View savings analysis</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="card p-6 stagger-3">
+                        <h3 class="text-xl font-semibold mb-4 text-green-400">Comparison Flow</h3>
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-green-500 font-bold mr-3">1.</span> Create first scenario</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-green-500 font-bold mr-3">2.</span> Save or add second</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-green-500 font-bold mr-3">3.</span> Add third scenario</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-green-500 font-bold mr-3">4.</span> Click compare</li>
+                            <li class="flex items-center transform transition-all hover:translate-x-2"><span class="text-green-500 font-bold mr-3">5.</span> Analyze side-by-side</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Technology Stack -->
+        <div class="slide" data-slide="5">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Technology Stack</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8 mt-8">
+                    <div class="card p-6 stagger-1">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded text-sm mr-3">Frontend</span>
+                        </h3>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="text-left py-2">Technology</th>
+                                    <th class="text-left py-2">Version</th>
+                                    <th class="text-left py-2">Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="table-row"><td class="py-2">React</td><td>18.2.0</td><td>UI Framework</td></tr>
+                                <tr class="table-row"><td class="py-2">React DOM</td><td>18.2.0</td><td>DOM Rendering</td></tr>
+                                <tr class="table-row"><td class="py-2">Babel</td><td>Latest</td><td>JS Compiler</td></tr>
+                                <tr class="table-row"><td class="py-2">Tailwind CSS</td><td>Latest</td><td>Styling</td></tr>
+                                <tr class="table-row"><td class="py-2">Axios</td><td>^1.13.6</td><td>HTTP Client</td></tr>
+                                <tr class="table-row"><td class="py-2">Chart.js</td><td>Latest</td><td>Visualization</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card p-6 stagger-2">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded text-sm mr-3">Backend</span>
+                        </h3>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="text-left py-2">Technology</th>
+                                    <th class="text-left py-2">Version</th>
+                                    <th class="text-left py-2">Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="table-row"><td class="py-2">Node.js</td><td>LTS</td><td>Runtime</td></tr>
+                                <tr class="table-row"><td class="py-2">Express</td><td>^5.2.1</td><td>Web Framework</td></tr>
+                                <tr class="table-row"><td class="py-2">Mongoose</td><td>^9.3.0</td><td>MongoDB ODM</td></tr>
+                                <tr class="table-row"><td class="py-2">Joi</td><td>Latest</td><td>Validation</td></tr>
+                                <tr class="table-row"><td class="py-2">JWT</td><td>^9.0.2</td><td>Auth Token</td></tr>
+                                <tr class="table-row"><td class="py-2">bcrypt</td><td>^5.1.0</td><td>Password Hash</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card p-6 mt-6 stagger-3">
+                    <h3 class="text-xl font-semibold mb-4 text-yellow-400">Technology Selection Rationale</h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800/50 p-4 rounded-lg transform transition-all hover:scale-105 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-white mb-2">React 18</h4>
+                            <p class="text-slate-400">Component-based, virtual DOM, large ecosystem</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg transform transition-all hover:scale-105 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-white mb-2">Express 5</h4>
+                            <p class="text-slate-400">Minimalist, middleware support, async/await</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg transform transition-all hover:scale-105 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-white mb-2">MongoDB</h4>
+                            <p class="text-slate-400">Flexible schema, JSON documents, scaling</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: API Endpoints -->
+        <div class="slide" data-slide="6">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">API Endpoints</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-semibold text-blue-400 mb-4">EMI Endpoints</h3>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/emi/calculate</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Calculate EMI</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/emi/eligibility</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Check eligibility</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/emi/prepayment</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Calculate prepayment impact</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/emi/foreclosure</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Calculate payoff amount</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/emi/compare</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Compare scenarios</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-semibold text-purple-400 mb-4">Auth & User Endpoints</h3>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/auth/register</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">User registration</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono">POST</span>
+                                <code class="text-blue-400 text-sm">/api/auth/login</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">User login</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs font-mono">GET</span>
+                                <code class="text-blue-400 text-sm">/api/emi/history</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Get calculation history</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs font-mono">DELETE</span>
+                                <code class="text-blue-400 text-sm">/api/emi/history/:id</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Delete calculation</p>
+                        </div>
+                        <div class="card p-4 transform transition-all hover:scale-[1.02] hover:shadow-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs font-mono">PUT</span>
+                                <code class="text-blue-400 text-sm">/api/user/preferences</code>
+                            </div>
+                            <p class="text-slate-400 text-xs">Update preferences</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Database Schema -->
+        <div class="slide" data-slide="7">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Database Schema</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="card p-5 stagger-1">
+                        <h3 class="text-lg font-semibold mb-3 text-blue-400">Users Collection</h3>
+                        <div class="overflow-x-auto text-xs">
+                            <table class="w-full">
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">email</td><td>String, unique</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">password</td><td>String, hashed</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">name</td><td>String</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">role</td><td>enum: guest/user/premium/admin</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">preferences</td><td>Object</td></tr>
+                                <tr><td class="py-1 text-slate-400">maxCalculations</td><td>Number</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-5 stagger-2">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">CalculationHistory</h3>
+                        <div class="overflow-x-auto text-xs">
+                            <table class="w-full">
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">userId</td><td>String (FK)</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">principalAmount</td><td>Number</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">interestRate</td><td>Number</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">interestRateType</td><td>enum</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">tenureMonths</td><td>Number</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-1 text-slate-400">emiAmount</td><td>Number</td></tr>
+                                <tr><td class="py-1 text-slate-400">calculationType</td><td>enum</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card p-5 mt-6 stagger-3">
+                    <h3 class="text-lg font-semibold mb-3 text-green-400">Entity Relationships</h3>
+                    <div class="flex items-center justify-center gap-4 flex-wrap">
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg border border-blue-500/30 transform transition-all hover:scale-110 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-blue-400">Users</h4>
+                            <p class="text-xs text-slate-500">1</p>
+                        </div>
+                        <span class="text-slate-500 text-xl">∶</span>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg border border-purple-500/30 transform transition-all hover:scale-110 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-purple-400">Calculations</h4>
+                            <p class="text-xs text-slate-500">Many</p>
+                        </div>
+                        <span class="text-slate-500 text-xl">∶</span>
+                        <div class="bg-slate-800 px-4 py-3 rounded-lg border border-green-500/30 transform transition-all hover:scale-110 hover:shadow-lg cursor-pointer">
+                            <h4 class="font-semibold text-green-400">Scenarios</h4>
+                            <p class="text-xs text-slate-500">Many</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Validation Logic -->
+        <div class="slide" data-slide="8">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Validation Logic</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="card p-5 stagger-1">
+                        <h3 class="text-lg font-semibold mb-4 text-blue-400">Principal Amount</h3>
+                        <table class="w-full text-sm">
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Min</td><td>₹1,000</td></tr>
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Max</td><td>₹100 crore</td></tr>
+                            <tr><td class="py-2 text-slate-400">Type</td><td>Number</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="card p-5 stagger-2">
+                        <h3 class="text-lg font-semibold mb-4 text-purple-400">Interest Rate</h3>
+                        <table class="w-full text-sm">
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Min</td><td>0.1%</td></tr>
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Max</td><td>50%</td></tr>
+                            <tr><td class="py-2 text-slate-400">Types</td><td>fixed/variable/floating/mixed</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="card p-5 stagger-3">
+                        <h3 class="text-lg font-semibold mb-4 text-green-400">Tenure</h3>
+                        <table class="w-full text-sm">
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Min</td><td>1 month</td></tr>
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Max</td><td>600 months (50 years)</td></tr>
+                            <tr><td class="py-2 text-slate-400">Input</td><td>Months or Years</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="card p-5 stagger-4">
+                        <h3 class="text-lg font-semibold mb-4 text-yellow-400">Credit Score</h3>
+                        <table class="w-full text-sm">
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Min</td><td>300</td></tr>
+                            <tr class="border-b border-slate-700"><td class="py-2 text-slate-400">Max</td><td>900</td></tr>
+                            <tr><td class="py-2 text-slate-400">Default</td><td>650</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card p-6 mt-6 stagger-5">
+                    <h3 class="text-lg font-semibold mb-4">EMI to Income Ratio</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center text-sm">
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">Home: 60%</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">Personal: 50%</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">Car: 40%</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">Education: 50%</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">Other: 40%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: EMI Calculation Methodology -->
+        <div class="slide" data-slide="9">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">EMI Calculation Methodology</h2>
+                
+                <div class="card p-6 mt-8 stagger-1">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">Standard EMI Formula</h3>
+                    <div class="bg-slate-800 p-6 rounded-lg text-center mb-6 transform transition-all hover:scale-[1.01]">
+                        <p class="text-2xl font-mono text-green-400">EMI = [P × r × (1 + r)<sup>n</sup>] / [(1 + r)<sup>n</sup> – 1]</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105"><span class="text-blue-400">P</span> = Principal</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105"><span class="text-blue-400">r</span> = Monthly Rate</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105"><span class="text-blue-400">n</span> = Tenure</div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105"><span class="text-blue-400">EMI</span> = Payment</div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="card p-5 stagger-2">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">Amortization Algorithm</h3>
+                        <div class="code-block text-xs text-blue-400">
+<pre>for month = 1 to tenure:
+  interest = balance × rate
+  principal = EMI - interest
+  balance = balance - principal
+  cumulativeInterest += interest</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-5 stagger-3">
+                        <h3 class="text-lg font-semibold mb-3 text-green-400">Example: ₹10L, 8.5%, 20yr</h3>
+                        <div class="bg-slate-800/50 p-4 rounded-lg text-center transform transition-all hover:scale-105">
+                            <p class="text-2xl font-bold text-green-400">EMI: ₹8,356.57</p>
+                            <p class="text-slate-400 mt-2">Total: ₹20,05,577</p>
+                            <p class="text-slate-400">Interest: ₹10,05,577</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card p-5 mt-6 stagger-4">
+                    <h3 class="text-lg font-semibold mb-3">Interest Rate Types</h3>
+                    <div class="grid md:grid-cols-4 gap-3 text-sm">
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <strong class="text-blue-400">Fixed</strong>
+                            <p class="text-slate-400 text-xs">Constant rate throughout</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <strong class="text-purple-400">Variable</strong>
+                            <p class="text-slate-400 text-xs">Changes with market</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <strong class="text-green-400">Floating</strong>
+                            <p class="text-slate-400 text-xs">Based on MCLR/PLR</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-3 rounded transform transition-all hover:scale-105 hover:bg-slate-700/50 cursor-pointer">
+                            <strong class="text-yellow-400">Mixed</strong>
+                            <p class="text-slate-400 text-xs">Fixed then floating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Test Cases -->
+        <div class="slide" data-slide="10">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Test Cases & Expected Outputs</h2>
+                
+                <div class="grid md:grid-cols-2 gap-4 mt-8">
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-1">
+                        <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">TC-001</span>
+                        <h4 class="font-semibold mt-2">Home Loan - ₹10L, 8.5%, 240mo</h4>
+                        <p class="text-green-400 mt-1">EMI: ₹8,356.57 | Interest: ₹10,05,577</p>
+                    </div>
+                    
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-2">
+                        <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">TC-002</span>
+                        <h4 class="font-semibold mt-2">Personal Loan - ₹1L, 12%, 12mo</h4>
+                        <p class="text-green-400 mt-1">EMI: ₹8,884.88 | Interest: ₹6,618.56</p>
+                    </div>
+                    
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-3">
+                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">TC-003</span>
+                        <h4 class="font-semibold mt-2">Car Loan - ₹5L, 9%, 60mo</h4>
+                        <p class="text-green-400 mt-1">EMI: ₹10,374.79 | Interest: ₹1,22,487</p>
+                    </div>
+                    
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-4">
+                        <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">TC-004</span>
+                        <h4 class="font-semibold mt-2">Eligibility - Income ₹1L, Score 750</h4>
+                        <p class="text-green-400 mt-1">Status: Eligible | Score: 85</p>
+                    </div>
+                    
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-5">
+                        <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">TC-005</span>
+                        <h4 class="font-semibold mt-2">Eligibility - Income ₹30K, Score 650</h4>
+                        <p class="text-red-400 mt-1">Status: Not Eligible | Score: 45</p>
+                    </div>
+                    
+                    <div class="card p-4 transform transition-all hover:scale-[1.02] stagger-6">
+                        <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs">TC-006</span>
+                        <h4 class="font-semibold mt-2">Prepayment - ₹1L at month 12</h4>
+                        <p class="text-green-400 mt-1">Savings: ₹2,85,420 | New tenure: 189mo</p>
+                    </div>
+                </div>
+                
+                <div class="card p-5 mt-6 stagger-6">
+                    <h3 class="text-lg font-semibold mb-4">Validation Test Cases</h3>
+                    <div class="grid md:grid-cols-2 gap-3 text-sm">
+                        <div class="bg-red-500/10 border border-red-500/30 p-3 rounded transform transition-all hover:scale-[1.02]">
+                            Principal < 1000 → "Minimum is 1000"
+                        </div>
+                        <div class="bg-red-500/10 border border-red-500/30 p-3 rounded transform transition-all hover:scale-[1.02]">
+                            Rate = 0 → "Minimum is 0.1%"
+                        </div>
+                        <div class="bg-red-500/10 border border-red-500/30 p-3 rounded transform transition-all hover:scale-[1.02]">
+                            Tenure decimal → "Must be whole number"
+                        </div>
+                        <div class="bg-red-500/10 border border-red-500/30 p-3 rounded transform transition-all hover:scale-[1.02]">
+                            Credit > 900 → "Maximum is 900"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Summary -->
+        <div class="slide" data-slide="11">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center highlight">Summary</h2>
+                
+                <div class="grid md:grid-cols-4 gap-6 mt-12">
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-1">
+                        <div class="text-4xl mb-4">📋</div>
+                        <h3 class="text-lg font-semibold">12 Features</h3>
+                        <p class="text-slate-400 text-sm mt-2">Complete financial tools</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-2">
+                        <div class="text-4xl mb-4">🔌</div>
+                        <h3 class="text-lg font-semibold">10+ Endpoints</h3>
+                        <p class="text-slate-400 text-sm mt-2">RESTful API</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-3">
+                        <div class="text-4xl mb-4">🗄️</div>
+                        <h3 class="text-lg font-semibold">3 Collections</h3>
+                        <p class="text-slate-400 text-sm mt-2">MongoDB schema</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-4">
+                        <div class="text-4xl mb-4">🔐</div>
+                        <h3 class="text-lg font-semibold">RBAC</h3>
+                        <p class="text-slate-400 text-sm mt-2">JWT Authentication</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-5">
+                        <div class="text-4xl mb-4">✅</div>
+                        <h3 class="text-lg font-semibold">Validation</h3>
+                        <p class="text-slate-400 text-sm mt-2">Joi-based</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110 stagger-6">
+                        <div class="text-4xl mb-4">🧮</div>
+                        <h3 class="text-lg font-semibold">Precision</h3>
+                        <p class="text-slate-400 text-sm mt-2">Standard EMI formula</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110">
+                        <div class="text-4xl mb-4">📱</div>
+                        <h3 class="text-lg font-semibold">Responsive</h3>
+                        <p class="text-slate-400 text-sm mt-2">Mobile-first design</p>
+                    </div>
+                    
+                    <div class="card p-6 text-center transform transition-all hover:scale-110">
+                        <div class="text-4xl mb-4">📊</div>
+                        <h3 class="text-lg font-semibold">17+ Tests</h3>
+                        <p class="text-slate-400 text-sm mt-2">Comprehensive coverage</p>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-2xl text-slate-300 mb-6">Thank You!</p>
+                    <p class="text-slate-500">Press ← to go back to first slide</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
+            <button onclick="prevSlide()" class="nav-btn px-6 py-3 rounded-lg text-white font-semibold">
+                ← Previous
+            </button>
+            <span id="slideCounter" class="text-slate-400 bg-slate-800/50 px-4 py-2 rounded-lg">1 / 11</span>
+            <button onclick="nextSlide()" class="nav-btn px-6 py-3 rounded-lg text-white font-semibold">
+                Next →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 11;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+                // Reset card animations
+                const cards = slide.querySelectorAll('.card');
+                cards.forEach(card => {
+                    card.style.opacity = '';
+                    card.style.transform = '';
+                });
+            });
+            
+            slides[currentSlide - 1].classList.add('active');
+            animateCardsInSlide();
+            
+            document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation with smooth transitions
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Touch support with swipe detection
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Add entrance animation to cards on slide change
+        function animateCardsInSlide() {
+            const activeSlide = document.querySelector('.slide.active');
+            if (activeSlide) {
+                const cards = activeSlide.querySelectorAll('.card');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100 + (index * 50));
+                });
+            }
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(currentSlide);
+        });
+    </script>
+</body>
+</html>
