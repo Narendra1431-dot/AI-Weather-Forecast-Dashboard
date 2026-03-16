@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weathery · sidebar data · no graphs</title>
+  <title>WeatherAI Dashboard - AI Powered Weather Forecast</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -26,10 +26,20 @@
   <!-- libraries -->
   <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/react-router-dom@6.20.0/umd/react-router-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/react-leaflet@4.2.1/dist/react-leaflet.js"></script>
+  <!-- React Router alias -->
+  <script>
+    // Wait for React Router to load
+    window.addEventListener('load', function() {
+      if (window.ReactRouterDOM) {
+        window.ReactRouterDOM = window.ReactRouterDOM;
+      }
+    });
+  </script>
   <!-- Web Speech API type declarations -->
   <script>
     if (typeof window !== 'undefined') {
@@ -4578,7 +4588,316 @@
       );
     };
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    // Home Page Component
+    const HomePage = () => {
+      const navigate = (path) => {
+        window.location.hash = path;
+      };
+      
+      const pageStyles = {
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#0b0f17',
+        fontFamily: "'Inter', system-ui, sans-serif",
+      };
+
+      const heroStyles = {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '80px 24px',
+        position: 'relative',
+        overflow: 'hidden',
+      };
+
+      const backgroundStyles = {
+        position: 'absolute',
+        inset: 0,
+        background: `
+          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
+          radial-gradient(ellipse 60% 40% at 80% 60%, rgba(6, 182, 212, 0.1), transparent),
+          radial-gradient(ellipse 50% 30% at 20% 80%, rgba(59, 130, 246, 0.08), transparent)
+        `,
+        zIndex: 0,
+      };
+
+      const contentStyles = {
+        position: 'relative',
+        zIndex: 1,
+        textAlign: 'center',
+        maxWidth: '800px',
+      };
+
+      const logoStyles = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        marginBottom: '48px',
+        cursor: 'pointer',
+      };
+
+      const iconStyles = {
+        width: '56px',
+        height: '56px',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+        borderRadius: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 20px rgba(59, 130, 246, 0.4)',
+      };
+
+      const titleStyles = {
+        fontFamily: "'Space Grotesk', sans-serif",
+        fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+        fontWeight: '700',
+        lineHeight: '1.1',
+        marginBottom: '24px',
+        background: 'linear-gradient(135deg, #fff 0%, #60a5fa 50%, #06b6d4 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      };
+
+      const subtitleStyles = {
+        fontSize: '1.25rem',
+        color: '#9ca3af',
+        marginBottom: '16px',
+        lineHeight: '1.7',
+        maxWidth: '600px',
+        margin: '0 auto 16px',
+      };
+
+      const descriptionStyles = {
+        fontSize: '1rem',
+        color: '#6b7280',
+        marginBottom: '48px',
+        lineHeight: '1.6',
+      };
+
+      const buttonStyles = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '18px 48px',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+        color: 'white',
+        fontSize: '1.125rem',
+        fontWeight: '600',
+        textDecoration: 'none',
+        borderRadius: '12px',
+        boxShadow: '0 4px 24px rgba(59, 130, 246, 0.4)',
+        transition: 'all 0.3s ease',
+        border: 'none',
+        cursor: 'pointer',
+      };
+
+      const handleEnterDashboard = () => {
+        navigate('/dashboard');
+      };
+
+      const statsStyles = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '32px',
+        marginTop: '80px',
+        paddingTop: '48px',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        maxWidth: '600px',
+        margin: '80px auto 0',
+      };
+
+      const statItemStyles = {
+        textAlign: 'center',
+      };
+
+      const statValueStyles = {
+        fontFamily: "'Space Grotesk', sans-serif",
+        fontSize: '2rem',
+        fontWeight: '700',
+        color: '#60a5fa',
+        marginBottom: '4px',
+      };
+
+      const statLabelStyles = {
+        fontSize: '0.875rem',
+        color: '#6b7280',
+      };
+
+      const footerStyles = {
+        background: 'rgba(17, 24, 39, 0.95)',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        padding: '48px 24px 24px',
+      };
+
+      const footerGridStyles = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: '32px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+      };
+
+      const columnTitleStyles = {
+        fontSize: '0.875rem',
+        fontWeight: '600',
+        color: '#f9fafb',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        marginBottom: '16px',
+      };
+
+      const linkStyles = {
+        color: '#9ca3af',
+        textDecoration: 'none',
+        fontSize: '0.9375rem',
+        display: 'block',
+        marginBottom: '8px',
+      };
+
+      const copyrightStyles = {
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        paddingTop: '24px',
+        textAlign: 'center',
+        color: '#6b7280',
+        fontSize: '0.875rem',
+        marginTop: '32px',
+      };
+
+      return (
+        <div style={pageStyles}>
+          <style>{`
+            @keyframes fadeInUp {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            .enter-btn:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 32px rgba(59, 130, 246, 0.5) !important;
+            }
+          `}</style>
+
+          <div style={heroStyles}>
+            <div style={backgroundStyles}></div>
+            <div style={contentStyles}>
+              {/* Logo */}
+              <div style={{...logoStyles, animation: 'fadeInUp 0.6s ease forwards'}} onClick={() => navigate('/dashboard')}>
+                <div style={iconStyles}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3V5M5.636 5.636L7.05 7.05M3 12H5M5.636 18.364L7.05 16.95M12 19V21M16.95 16.95L18.364 18.364M19 12H21M16.95 7.05L18.364 5.636" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="12" cy="12" r="4" fill="white"/>
+                  </svg>
+                </div>
+                <span style={{fontFamily: "'Space Grotesk', sans-serif", fontSize: '2rem', fontWeight: '700', background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+                  WeatherAI
+                </span>
+              </div>
+
+              <h1 style={{...titleStyles, animation: 'fadeInUp 0.6s ease 0.1s forwards', opacity: 0}}>
+                WeatherAI Dashboard
+              </h1>
+              
+              <p style={{...subtitleStyles, animation: 'fadeInUp 0.6s ease 0.2s forwards', opacity: 0}}>
+                AI Powered Weather Forecast and Environmental Monitoring Platform
+              </p>
+              
+              <p style={{...descriptionStyles, animation: 'fadeInUp 0.6s ease 0.3s forwards', opacity: 0}}>
+                Get real-time weather predictions, air quality monitoring, and environmental insights 
+                powered by advanced AI algorithms. Experience the future of weather forecasting today.
+              </p>
+
+              <button 
+                className="enter-btn"
+                style={{...buttonStyles, animation: 'fadeInUp 0.6s ease 0.4s forwards', opacity: 0}}
+                onClick={handleEnterDashboard}
+              >
+                Enter Dashboard
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+
+              <div style={{...statsStyles, animation: 'fadeInUp 0.6s ease 0.5s forwards', opacity: 0}}>
+                <div style={statItemStyles}>
+                  <div style={statValueStyles}>150+</div>
+                  <div style={statLabelStyles}>Countries</div>
+                </div>
+                <div style={statItemStyles}>
+                  <div style={statValueStyles}>99.9%</div>
+                  <div style={statLabelStyles}>Uptime</div>
+                </div>
+                <div style={statItemStyles}>
+                  <div style={statValueStyles}>24/7</div>
+                  <div style={statLabelStyles}>Support</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer style={footerStyles}>
+            <div style={footerGridStyles}>
+              <div>
+                <h4 style={columnTitleStyles}>Services</h4>
+                <a href="#" style={linkStyles}>Weather Forecast</a>
+                <a href="#" style={linkStyles}>Air Quality Monitoring</a>
+                <a href="#" style={linkStyles}>Environmental Insights</a>
+                <a href="#" style={linkStyles}>Climate Analytics</a>
+              </div>
+              <div>
+                <h4 style={columnTitleStyles}>Company</h4>
+                <a href="about.html" style={linkStyles}>About Us</a>
+                <a href="#" style={linkStyles}>Contact</a>
+                <a href="#" style={linkStyles}>Support</a>
+              </div>
+              <div>
+                <h4 style={columnTitleStyles}>Legal</h4>
+                <a href="privacy.html" style={linkStyles}>Privacy Policy</a>
+                <a href="terms.html" style={linkStyles}>Terms & Conditions</a>
+                <a href="#" style={linkStyles}>Data Usage Policy</a>
+              </div>
+              <div>
+                <h4 style={columnTitleStyles}>Technology</h4>
+                <a href="#" style={linkStyles}>AI Powered Prediction</a>
+                <a href="#" style={linkStyles}>Real-time Weather APIs</a>
+                <a href="#" style={linkStyles}>Environmental Monitoring</a>
+              </div>
+            </div>
+            <div style={copyrightStyles}>
+              © 2026 WeatherAI Platform. All rights reserved.
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    // Simple client-side routing
+    const PageRouter = () => {
+      const [route, setRoute] = React.useState(window.location.hash.replace('#', '') || '/');
+      
+      React.useEffect(() => {
+        const handleHashChange = () => {
+          setRoute(window.location.hash.replace('#', '') || '/');
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+      }, []);
+      
+      // Route to dashboard if no hash
+      if (route === '/' || route === '') {
+        return <HomePage />;
+      } else if (route === '/dashboard' || route === 'dashboard') {
+        return <App />;
+      }
+      
+      // Default to home
+      return <HomePage />;
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<PageRouter />);
   </script>
 </body>
 </html>

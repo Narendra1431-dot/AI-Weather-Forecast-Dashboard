@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - WeatherAPI Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --primary-light: #60a5fa;
+      --accent: #06b6d4;
+      --dark-bg: #0a0e17;
+      --dark-card: #111827;
+      --dark-card-hover: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --border: rgba(255,255,255,0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      background: rgba(17, 24, 39, 0.95);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      margin-bottom: 32px;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+    }
+    
+    .nav-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 12px;
+      margin-bottom: 12px;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 10px;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+    }
+    
+    .nav-item.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary-light);
+    }
+    
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    /* Main Content */
+    .main-wrapper {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+    
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+    
+    .page-header {
+      margin-bottom: 48px;
+    }
+    
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .page-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    .content-section {
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    
+    .section-text {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .feature-item:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateX(4px);
+    }
+    
+    .feature-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .feature-icon svg {
+      width: 18px;
+      height: 18px;
+      color: var(--primary-light);
+    }
+    
+    .feature-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+    
+    .feature-content p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 150;
+      width: 44px;
+      height: 44px;
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .mobile-toggle svg {
+      width: 24px;
+      height: 24px;
+      color: var(--text-primary);
+    }
+    
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .sidebar-overlay.open {
+        display: block;
+      }
+      
+      .mobile-toggle {
+        display: flex;
+      }
+      
+      .main-wrapper {
+        margin-left: 0;
+      }
+      
+      .main-content {
+        padding: 80px 24px 40px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .main-content {
+        padding: 80px 20px 32px;
+      }
+    }
+    
+    /* Fixed Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 260px;
+      right: 0;
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .footer-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .footer-logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .footer-text {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .footer-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .footer-logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary-light);
+    }
+    
+    @media (max-width: 768px) {
+      .footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 16px 20px;
+      }
+      
+      .footer-brand {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Toggle -->
+  <button class="mobile-toggle" onclick="toggleSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+  
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3V5M5.636 5.636L7.05 7.05M3 12H5M5.636 18.364L7.05 16.95M12 19V21M16.95 16.95L18.364 18.364M19 12H21M16.95 7.05L18.364 5.636" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="4" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-text">WeatherAPI</span>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <p class="nav-label">Information</p>
+      
+      <a href="about.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        About Us
+      </a>
+      
+      <a href="privacy.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Privacy Policy
+      </a>
+      
+      <a href="terms.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        Terms of Service
+      </a>
+      
+      <p class="nav-label" style="margin-top: 24px;">Dashboard</p>
+      
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Weather Dashboard
+      </a>
+      
+      <a href="home.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Home
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title">About Us</h1>
+        <p class="page-subtitle">
+          Welcome to WeatherAPI Pro – a modern web application providing smart tools and resources 
+          for weather data analysis, forecasting, and environmental monitoring. Our platform combines 
+          powerful technology with user-friendly design to deliver accurate weather information.
+        </p>
+      </header>
+      
+      <section class="content-section">
+        <h2 class="section-title">Our Mission</h2>
+        <p class="section-text">
+          Our mission is to make weather data accessible, understandable, and actionable for everyone. 
+          We strive to empower individuals, businesses, and developers with accurate meteorological 
+          information that helps them make informed decisions. Whether you're planning your day, 
+          building weather-dependent applications, or analyzing climate patterns, we're here to provide 
+          the data you need with reliability and precision.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Our Vision</h2>
+        <p class="section-text">
+          We envision a world where weather information is seamlessly integrated into daily life, 
+          helping people and organizations prepare for and adapt to changing weather conditions. 
+          Our goal is to become the most trusted source for weather data by continuously 
+          improving our algorithms, expanding our coverage, and innovating with new technologies 
+          like AI and machine learning to deliver even more accurate predictions.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">What We Provide</h2>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>Real-Time Weather Data</h4>
+              <p>Get instant access to current weather conditions including temperature, humidity, wind speed, and more for any location worldwide.</p>
+            </div>
+          </li>
+          
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>7-Day Forecasts</h4>
+              <p>Plan ahead with accurate 7-day weather predictions and hourly forecasts to help you prepare for any weather event.</p>
+            </div>
+          </li>
+          
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>Historical Data</h4>
+              <p>Access decades of historical weather data for research, analysis, and comparison purposes.</p>
+            </div>
+          </li>
+          
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>Air Quality Monitoring</h4>
+              <p>Stay informed about air quality index, PM2.5, PM10, and other environmental metrics affecting health.</p>
+            </div>
+          </li>
+          
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>Interactive Maps</h4>
+              <p>Explore weather patterns through our interactive map interface with visual representations of temperature, precipitation, and more.</p>
+            </div>
+          </li>
+          
+          <li class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 20V10M12 20V4M6 20v-6"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h4>Weather Alerts</h4>
+              <p>Receive timely notifications for severe weather conditions, storms, and extreme temperature warnings.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Fixed Footer -->
+  <footer class="footer">
+    <div class="footer-brand" onclick="window.location.href='index.html'">
+      <div class="footer-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3V5M5.636 5.636L7.05 7.05M3 12H5M5.636 18.364L7.05 16.95M12 19V21M16.95 16.95L18.364 18.364M19 12H21M16.95 7.05L18.364 5.636" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="4" fill="white"/>
+        </svg>
+      </div>
+      <span class="footer-logo-text">WeatherAPI Pro</span>
+    </div>
+    <p class="footer-text">© 2026 WeatherAPI Pro. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - WeatherAPI Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --primary-light: #60a5fa;
+      --accent: #06b6d4;
+      --dark-bg: #0a0e17;
+      --dark-card: #111827;
+      --dark-card-hover: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --border: rgba(255,255,255,0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      background: rgba(17, 24, 39, 0.95);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      margin-bottom: 32px;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+    }
+    
+    .nav-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 12px;
+      margin-bottom: 12px;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 10px;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+    }
+    
+    .nav-item.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary-light);
+    }
+    
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    /* Main Content */
+    .main-wrapper {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+    
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+    
+    .page-header {
+      margin-bottom: 48px;
+    }
+    
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .page-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    .content-section {
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 2px;
+    }
+    
+    .section-text {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    
+    .info-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .info-box p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    .warning-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .warning-box p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 150;
+      width: 44px;
+      height: 44px;
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .mobile-toggle svg {
+      width: 24px;
+      height: 24px;
+      color: var(--text-primary);
+    }
+    
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .sidebar-overlay.open {
+        display: block;
+      }
+      
+      .mobile-toggle {
+        display: flex;
+      }
+      
+      .main-wrapper {
+        margin-left: 0;
+      }
+      
+      .main-content {
+        padding: 80px 24px 40px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .main-content {
+        padding: 80px 20px 32px;
+      }
+    }
+    
+    /* Fixed Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 260px;
+      right: 0;
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+    }
+    
+    .footer-text {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .footer-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .footer-logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary-light);
+    }
+    
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 40px 100px;
+    }
+    
+    @media (max-width: 1024px) {
+      .footer {
+        left: 0;
+        padding: 16px 24px;
+      }
+      
+      .main-content {
+        padding: 80px 24px 100px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 16px 20px;
+      }
+      
+      .footer-brand {
+        order: -1;
+      }
+      
+      .main-content {
+        padding: 80px 20px 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Toggle -->
+  <button class="mobile-toggle" onclick="toggleSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+  
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3V5M5.636 5.636L7.05 7.05M3 12H5M5.636 18.364L7.05 16.95M12 19V21M16.95 16.95L18.364 18.364M19 12H21M16.95 7.05L18.364 5.636" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="4" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-text">WeatherAPI</span>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <p class="nav-label">Information</p>
+      
+      <a href="about.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        About Us
+      </a>
+      
+      <a href="privacy.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Privacy Policy
+      </a>
+      
+      <a href="terms.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        Terms of Service
+      </a>
+      
+      <p class="nav-label" style="margin-top: 24px;">Dashboard</p>
+      
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Weather Dashboard
+      </a>
+      
+      <a href="home.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Home
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title">Terms of Service</h1>
+        <p class="page-subtitle">
+          Please read these terms carefully before using our services. By accessing WeatherAPI Pro, you agree to be bound by these terms.
+        </p>
+      </header>
+      
+      <div class="info-box">
+        <p><strong>Last Updated:</strong> March 2026<br>
+        By using WeatherAPI Pro, you agree to these terms. If you disagree with any part, please do not use our services.</p>
+      </div>
+      
+      <section class="content-section">
+        <h2 class="section-title">Acceptance of Terms</h2>
+        <p class="section-text">
+          By accessing and using WeatherAPI Pro ("the Service"), you accept and agree to be bound by the terms and 
+          provisions of this agreement. Additionally, when using WeatherAPI Pro's services, you shall be subject to 
+          any posted guidelines or rules applicable to such services.
+        </p>
+        <p class="section-text">
+          These Terms of Service constitute a legally binding agreement between you and WeatherAPI Pro. You acknowledge 
+          that you have read, understood, and agree to be bound by these terms.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">User Responsibilities</h2>
+        <p class="section-text">
+          As a user of WeatherAPI Pro, you agree to:
+        </p>
+        <p class="section-text">
+          • Provide accurate and complete registration information<br>
+          • Maintain the security of your account credentials<br>
+          • Promptly update any changed information<br>
+          • Accept responsibility for all activities under your account<br>
+          • Notify us immediately of any unauthorized access<br>
+          • Comply with all applicable laws and regulations
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Acceptable Use</h2>
+        <p class="section-text">
+          <strong>Permitted Use:</strong> You may use our services for personal, educational, and commercial purposes 
+          in accordance with these terms.
+        </p>
+        <p class="section-text">
+          <strong>Prohibited Activities:</strong> You agree NOT to:
+        </p>
+        <p class="section-text">
+          • Use the service for any unlawful purpose<br>
+          • Attempt to gain unauthorized access to any part of the system<br>
+          • Interfere with or disrupt the service servers<br>
+          • Reverse engineer or disassemble any component<br>
+          • Copy, reproduce, or distribute content without permission<br>
+          • Use automated tools to access the service beyond rate limits<br>
+          • Resell or redistribute our data without authorization<br>
+          • Impersonate any person or entity
+        </p>
+        
+        <div class="warning-box">
+          <p><strong>Violation Consequences:</strong> Any violation of these terms may result in immediate termination 
+          of your account, legal action, and/or civil or criminal penalties. We reserve the right to terminate 
+          access to anyone who violates these terms.</p>
+        </div>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Intellectual Property</h2>
+        <p class="section-text">
+          The WeatherAPI Pro platform, including all content, features, and functionality, is owned by WeatherAPI Pro 
+          and is protected by copyright, trademark, and other intellectual property laws.
+        </p>
+        <p class="section-text">
+          <strong>Our Rights:</strong> All rights, title, and interest in and to the Service, including the website, 
+          API, documentation, logos, and all related materials, are and shall remain the exclusive property of 
+          WeatherAPI Pro.
+        </p>
+        <p class="section-text">
+          <strong>Your Rights:</strong> You retain ownership of any content you submit to the Service. By submitting 
+          content, you grant us a worldwide, non-exclusive license to use, reproduce, and display such content 
+          as necessary to provide our services.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Limitation of Liability</h2>
+        <p class="section-text">
+          <strong>No Warranty:</strong> THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. WEATHERAPI 
+          PRO MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+          TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+        </p>
+        <p class="section-text">
+          <strong>Accuracy of Data:</strong> While we strive to provide accurate weather data, we cannot guarantee 
+          the accuracy, completeness, or reliability of any information provided through the Service. Weather 
+          data should not be used as the sole basis for decisions that could result in harm to persons or property.
+        </p>
+        <p class="section-text">
+          <strong>Liability Cap:</strong> IN NO EVENT SHALL WEATHERAPI PRO BE LIABLE FOR ANY INDIRECT, INCIDENTAL, 
+          SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, 
+          INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR GOODWILL.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Account Termination</h2>
+        <p class="section-text">
+          <strong>Grounds for Termination:</strong> We may terminate or suspend your account immediately, without 
+          prior notice or liability, for any reason, including:
+        </p>
+        <p class="section-text">
+          • Breach of these Terms of Service<br>
+          • Violation of applicable laws or regulations<br>
+          • Non-payment of fees (if applicable)<br>
+          • Inactivity for an extended period<br>
+          • Request for termination by you
+        </p>
+        <p class="section-text">
+          <strong>Effect of Termination:</strong> Upon termination, your right to use the Service will immediately 
+          cease. All provisions of these terms which by their nature should survive termination shall survive.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Changes to Terms</h2>
+        <p class="section-text">
+          We reserve the right to modify these Terms of Service at any time. Any changes will be effective immediately 
+          upon posting to this page. Your continued use of the Service after any changes constitutes acceptance 
+          of the new terms.
+        </p>
+        <p class="section-text">
+          We encourage you to review these terms periodically to stay informed about any updates. The "Last Updated" 
+          date at the top of this page indicates when changes were last made.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Governing Law</h2>
+        <p class="section-text">
+          These Terms of Service shall be governed by and construed in accordance with the laws of the State of 
+          California, United States, without regard to its conflict of law provisions.
+        </p>
+      </section>
+      
+      <section class="content-section">
+        <h2 class="section-title">Contact Information</h2>
+        <p class="section-text">
+          If you have any questions about these Terms of Service, please contact us:
+        </p>
+        <p class="section-text">
+          <strong>Email:</strong> legal@weatherapi.com<br>
+          <strong>Phone:</strong> +1 (555) 123-4567<br>
+          <strong>Address:</strong> San Francisco, CA, United States
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Fixed Footer -->
+  <footer class="footer">
+    <div class="footer-brand" onclick="window.location.href='index.html'">
+      <div class="footer-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3V5M5.636 5.636L7.05 7.05M3 12H5M5.636 18.364L7.05 16.95M12 19V21M16.95 16.95L18.364 18.364M19 12H21M16.95 7.05L18.364 5.636" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="4" fill="white"/>
+        </svg>
+      </div>
+      <span class="footer-logo-text">WeatherAPI Pro</span>
+    </div>
+    <p class="footer-text">© 2026 WeatherAPI Pro. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
